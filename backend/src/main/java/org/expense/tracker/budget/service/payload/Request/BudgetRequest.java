@@ -21,14 +21,15 @@ public class BudgetRequest {
     @NotNull
     @Valid
     private String username;
-    @NotNull
-    @Valid
+//    @NotNull
+//    @Valid
     private LocalDate startDate;
-    @NotNull
-    @Valid
+//    @NotNull
+//    @Valid
     private LocalDate endDate;
 
     private LocalDateTime createdAt;
+
     @NotNull
     private BigDecimal allocatedAmount;
 

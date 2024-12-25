@@ -18,8 +18,8 @@ public class Budget {
 
     @Id
     @Column(name = "budget_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private BigInteger budget_Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private BigInteger budgetId;
 
     @Column(name = "user_id")
     private BigInteger userId;
