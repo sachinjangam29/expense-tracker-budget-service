@@ -3,10 +3,7 @@ package org.expense.tracker.budget.service.Exception;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.catalina.User;
 import org.expense.tracker.budget.service.Exception.ExceptionMessageFormat.ExceptionMessageFormat;
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.BudgetForGivenDatesAlreadyCreatedForUser;
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.DuplicateEntryException;
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.UserNotFoundException;
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.ValidDateException;
+import org.expense.tracker.budget.service.Exception.Exceptionclasses.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -40,6 +37,12 @@ public class GlobalExceptions {
     public ResponseEntity<ExceptionMessageFormat> validDates(Exception e, HttpServletRequest request) {
         exceptionMessageFormat = new ExceptionMessageFormat(HttpStatus.BAD_REQUEST,request.getRequestURI(),e.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(exceptionMessageFormat, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BudgetForGivenDatesNotFound.class)
+    public ResponseEntity<ExceptionMessageFormat> budgetNotFound(Exception e, HttpServletRequest request) {
+        exceptionMessageFormat = new ExceptionMessageFormat(HttpStatus.NOT_FOUND,request.getRequestURI(),e.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(exceptionMessageFormat, HttpStatus.NOT_FOUND);
     }
 
 }

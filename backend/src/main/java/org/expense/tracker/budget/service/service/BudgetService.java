@@ -1,15 +1,13 @@
 package org.expense.tracker.budget.service.service;
 
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.BudgetForGivenDatesAlreadyCreatedForUser;
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.DuplicateEntryException;
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.UserNotFoundException;
-import org.expense.tracker.budget.service.Exception.Exceptionclasses.ValidDateException;
+import org.expense.tracker.budget.service.Exception.Exceptionclasses.*;
 import org.expense.tracker.budget.service.UserClient;
 import org.expense.tracker.budget.service.model.Budget;
 import org.expense.tracker.budget.service.payload.Request.BudgetRequest;
 import org.expense.tracker.budget.service.repository.BudgetRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +23,7 @@ public class BudgetService {
     private final BudgetRepository budgetRepository;
     private final UserClient userClient;
     private final Logger logger = LoggerFactory.getLogger(BudgetService.class);
+    private  BigInteger userId = null;
 
     public BudgetService(BudgetRepository budgetRepository,
                          UserClient userClient) {
@@ -33,10 +32,8 @@ public class BudgetService {
     }
 
     public Budget addBudget(BudgetRequest budgetRequest) {
-        BigInteger userId = getUserId(budgetRequest.getUsername());
-        if (userId == null) {
-            throw new UserNotFoundException("User ID not found for username: " + budgetRequest.getUsername());
-        }
+        userId = getValidatedUser(budgetRequest.getUsername());
+
 
         LocalDate startDate = budgetRequest.getStartDate();
         LocalDate endDate = budgetRequest.getEndDate();
@@ -69,6 +66,36 @@ public class BudgetService {
                 throw new DuplicateEntryException("Duplicate entry for the user. Please check your data.");
             }
             throw ex;
+        }
+    }
+
+    public int deleteBudgetForGivenDates(BudgetRequest budgetRequest) {
+         userId = getValidatedUser(budgetRequest.getUsername());
+        int countDeletedRecords = 0;
+
+        LocalDate startDate = budgetRequest.getStartDate();
+        LocalDate endDate = budgetRequest.getEndDate();
+        if (endDate.isBefore(startDate)) {
+            throw new ValidDateException("End date cannot be before start date. Please provide valid dates.");
+        }
+        try {
+             countDeletedRecords = budgetRepository.deleteByStartAndEndDate(startDate, endDate, userId);
+            if (countDeletedRecords == 0) {
+                throw new BudgetForGivenDatesNotFound("Budgets for the given dates not found");
+            }
+        }catch (DataAccessException e) {  // Handle specific database exceptions
+            logger.error("Database error while deleting budget: " + e.getMessage());
+            throw e;  // Re-throw the exception
+        }
+        return countDeletedRecords;
+    }
+
+    private BigInteger getValidatedUser(String username) {
+        BigInteger userId = getUserId(username);
+        if(userId == null) {
+            throw new UserNotFoundException("Username not available: {} " +username);
+        }else {
+            return userId;
         }
     }
 
