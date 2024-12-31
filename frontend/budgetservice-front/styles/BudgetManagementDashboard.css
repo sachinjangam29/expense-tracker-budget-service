@@ -10,6 +10,13 @@ body {
     padding: 20px;
 }
 
+.error {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    font-weight: normal;
+}
+
 .container {
     max-width: 800px;
     margin: 0 auto;
