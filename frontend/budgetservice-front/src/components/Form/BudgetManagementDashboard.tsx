@@ -100,10 +100,10 @@ const BudgetManagementDashboard: React.FC<BudgetEntryProps> = ({
                         <div className="form-group">
                             <label>Allotment Money</label>
                             <input type="number"
-                                   id="allotmentAmount"
+                                   id="allocatedAmount"
                                    placeholder="Enter amount"
                                    required
-                                   value={formData.allotmentAmount}
+                                   value={formData.allocatedAmount}
                                    onChange={handleInputChange}
                             />
                         </div>
@@ -111,7 +111,7 @@ const BudgetManagementDashboard: React.FC<BudgetEntryProps> = ({
                             <label>Carry Forward</label>
                             <input type="number"
 
-                                   id="carryForwar"
+                                   id="carryForward"
                                    required
                                    value={formData.carryForward}
                                    placeholder="Enter amount"

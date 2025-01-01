@@ -1,6 +1,7 @@
-export interface BudgetEntryState{
+export interface BudgetEntryState {
     startDate: Date;
     endDate: Date;
-    allotmentAmount: number
-    carryForward: number
+    allocatedAmount: number;
+    carryForward: number;
+    username: string;
 }
